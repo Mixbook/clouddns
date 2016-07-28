@@ -11,7 +11,11 @@ module Clouddns
       end
       class Create < None
         def perform! fog_zone
-          fog_zone.records.create(:type => record.type, :name => record.name, :value => record.value, :ttl => record.ttl)
+          if record.attributes[:alias_target]
+            fog_zone.records.create(:type => record.type, :name => record.name, :value => record.value, :alias_target => record.attributes[:alias_target])
+          else
+            fog_zone.records.create(:type => record.type, :name => record.name, :value => record.value, :ttl => record.ttl)
+          end
         end
         def print_prefix; '+'; end
       end
